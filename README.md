@@ -1,3 +1,5 @@
+Demo https://t.me/correcthorsebatterystaplebot
+
 Generates XKCD passwords. See https://xkcd.com/936/
 
 No logs.
