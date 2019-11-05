@@ -5,13 +5,14 @@ from telegram import Bot, ReplyKeyboardMarkup, ParseMode
 from telegram.ext import Dispatcher, Updater, MessageHandler, Filters, CommandHandler
 from telegram.update import Update
 
+from words import words
+
 
 PASSWORDS_COUNT = 5
 BOT_TOKEN = os.environ['BOT_TOKEN']
 
 
 def generate_passwords(mask):
-    words = open('words.txt').read().splitlines()
     passwords = []
     for i in range(PASSWORDS_COUNT):
         password = mask
