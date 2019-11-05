@@ -1,5 +1,6 @@
 import os
 import random
+import string
 
 from telegram import Bot, ReplyKeyboardMarkup, ParseMode
 from telegram.ext import Dispatcher, Updater, MessageHandler, Filters, CommandHandler
@@ -19,13 +20,14 @@ No logs.
 
 Custom password masks available.
 · %d for digit
+· %p for special character
 · %w for lowercased word
 · %W for Capitalized word
 · %C for UPPERCASED word
 
 Example:
 `%w-%w-%w-%w` outputs `escalators-better-vaccinate-nonabsorbent`
-`%w-%W-%C-%d%d%d` outputs `carousels-Foreshadowing-DISHWATER-934`
+`%w-%W-%C%s%d%d%d` outputs `carousels-Foreshadowing-DISHWATER@934`
 '''
 
 
@@ -41,6 +43,8 @@ def generate_passwords(mask):
             password = password.replace('%C', random.choice(words).upper(), 1)
         while '%d' in password:
             password = password.replace('%d', str(random.randint(0, 9)), 1)
+        while '%s' in password:
+            password = password.replace('%s', random.choice(string.punctuation), 1)
         passwords.append('`{0}`'.format(password))
     return '\n\n'.join(passwords)
 
@@ -58,10 +62,6 @@ def message_handler(update, context):
 
 def start_command_handler(update, context):
     message = update.message
-    message.reply_text(
-        text=HELP_MESSAGE,
-        parse_mode=ParseMode.MARKDOWN,
-    )
     default_mask = '%w-%w-%w-%w'
     reply_markup = ReplyKeyboardMarkup([[default_mask]], resize_keyboard=True)
     message.reply_text(
