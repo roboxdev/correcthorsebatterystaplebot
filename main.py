@@ -28,7 +28,7 @@ def generate_passwords(mask):
     return '\n\n'.join(passwords)
 
 
-def message_handler(bot, update):
+def message_handler(update, context):
     message = update.message
     message_text = message.text
     reply_markup = ReplyKeyboardMarkup([[message_text]])
@@ -39,7 +39,7 @@ def message_handler(bot, update):
     )
 
 
-def start_command_handler(bot, update):
+def start_command_handler(update, context):
     message = update.message
     default_mask = '%w-%w-%w-%w'
     reply_markup = ReplyKeyboardMarkup([[default_mask]])
@@ -50,7 +50,7 @@ def start_command_handler(bot, update):
     )
 
 
-def echo_command_handler(bot, update):
+def echo_command_handler(update, context):
     message = update.message
     message.reply_text(text='ok')
 
@@ -66,7 +66,7 @@ def set_handlers(dispatcher):
 
 def setup_dispatcher(token):
     bot = Bot(token)
-    dispatcher = Dispatcher(bot, None, workers=0)
+    dispatcher = Dispatcher(bot, None, workers=0, use_context=True)
     set_handlers(dispatcher)
     return dispatcher
 
@@ -82,11 +82,11 @@ def main(request):
 if __name__ == '__main__':
     # DEBUG ONLY
     webhook_url = os.environ['WEBHOOK_URL']
-    updater = Updater(token=BOT_TOKEN)
+    updater = Updater(token=BOT_TOKEN, use_context=True)
     set_handlers(updater.dispatcher)
-    # updater.start_polling()
+    updater.bot.set_webhook(webhook_url)
+    # updater.bot.set_webhook(os.environ.get('WEBHOOK_URL_PROD'))
     updater.start_webhook(listen='0.0.0.0',
                           port=4000,
                           url_path='/',
                           webhook_url=webhook_url)
-    updater.bot.set_webhook(webhook_url)
