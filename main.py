@@ -12,6 +12,23 @@ PASSWORDS_COUNT = 5
 BOT_TOKEN = os.environ['BOT_TOKEN']
 
 
+HELP_MESSAGE = '''
+Generates XKCD passwords. See https://xkcd.com/936/
+
+No logs.
+
+Custom password masks available.
+· %d for digit
+· %w for lowercased word
+· %W for Capitalized word
+· %C for UPPERCASED word
+
+Example:
+`%w-%w-%w-%w` outputs `escalators-better-vaccinate-nonabsorbent`
+`%w-%W-%C-%d%d%d` outputs `carousels-Foreshadowing-DISHWATER-934`
+'''
+
+
 def generate_passwords(mask):
     passwords = []
     for i in range(PASSWORDS_COUNT):
@@ -41,6 +58,10 @@ def message_handler(update, context):
 
 def start_command_handler(update, context):
     message = update.message
+    message.reply_text(
+        text=HELP_MESSAGE,
+        parse_mode=ParseMode.MARKDOWN,
+    )
     default_mask = '%w-%w-%w-%w'
     reply_markup = ReplyKeyboardMarkup([[default_mask]])
     message.reply_text(
@@ -50,9 +71,12 @@ def start_command_handler(update, context):
     )
 
 
-def echo_command_handler(update, context):
+def help_command_handler(update, context):
     message = update.message
-    message.reply_text(text='ok')
+    message.reply_text(
+        text=HELP_MESSAGE,
+        parse_mode=ParseMode.MARKDOWN,
+    )
 
 
 def set_handlers(dispatcher):
@@ -60,8 +84,8 @@ def set_handlers(dispatcher):
     dispatcher.add_handler(any_message_handler)
     command_handler = CommandHandler('start', start_command_handler)
     dispatcher.add_handler(command_handler)
-    echo_handler = CommandHandler('echo', echo_command_handler)
-    dispatcher.add_handler(echo_handler)
+    help_handler = CommandHandler('help', help_command_handler)
+    dispatcher.add_handler(help_handler)
 
 
 def setup_dispatcher(token):
@@ -84,8 +108,8 @@ if __name__ == '__main__':
     webhook_url = os.environ['WEBHOOK_URL']
     updater = Updater(token=BOT_TOKEN, use_context=True)
     set_handlers(updater.dispatcher)
-    updater.bot.set_webhook(webhook_url)
     # updater.bot.set_webhook(os.environ.get('WEBHOOK_URL_PROD'))
+    updater.bot.set_webhook(webhook_url)
     updater.start_webhook(listen='0.0.0.0',
                           port=4000,
                           url_path='/',
