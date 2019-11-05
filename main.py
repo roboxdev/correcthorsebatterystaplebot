@@ -50,11 +50,18 @@ def start_command_handler(bot, update):
     )
 
 
+def echo_command_handler(bot, update):
+    message = update.message
+    message.reply_text(text='ok')
+
+
 def set_handlers(dispatcher):
     any_message_handler = MessageHandler(Filters.text, message_handler)
     dispatcher.add_handler(any_message_handler)
     command_handler = CommandHandler('start', start_command_handler)
     dispatcher.add_handler(command_handler)
+    echo_handler = CommandHandler('echo', echo_command_handler)
+    dispatcher.add_handler(echo_handler)
 
 
 def setup_dispatcher(token):
