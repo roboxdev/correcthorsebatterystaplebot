@@ -48,7 +48,7 @@ def generate_passwords(mask):
 def message_handler(update, context):
     message = update.message
     message_text = message.text
-    reply_markup = ReplyKeyboardMarkup([[message_text]])
+    reply_markup = ReplyKeyboardMarkup([[message_text]], resize_keyboard=True)
     message.reply_text(
         text=generate_passwords(mask=message_text),
         reply_markup=reply_markup,
@@ -63,7 +63,7 @@ def start_command_handler(update, context):
         parse_mode=ParseMode.MARKDOWN,
     )
     default_mask = '%w-%w-%w-%w'
-    reply_markup = ReplyKeyboardMarkup([[default_mask]])
+    reply_markup = ReplyKeyboardMarkup([[default_mask]], resize_keyboard=True)
     message.reply_text(
         text=generate_passwords(mask=default_mask),
         reply_markup=reply_markup,
